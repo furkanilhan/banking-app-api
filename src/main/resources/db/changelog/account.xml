@@ -13,7 +13,7 @@
                 <constraints unique="true" nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(255)">
-                <constraints unique="true" nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="balance" type="DECIMAL(19, 4)">
                 <constraints nullable="false"/>
