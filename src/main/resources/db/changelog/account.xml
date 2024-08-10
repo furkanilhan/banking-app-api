@@ -33,4 +33,14 @@
                 referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="create-account-indexes" author="fuilhan">
+        <createIndex indexName="idx_account_number" tableName="account">
+            <column name="number"/>
+        </createIndex>
+
+        <createIndex indexName="idx_account_name" tableName="account">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

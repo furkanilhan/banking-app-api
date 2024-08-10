@@ -4,6 +4,7 @@ import com.furkan.banking.dto.AccountDTO;
 import com.furkan.banking.payload.response.MessageResponse;
 import com.furkan.banking.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,19 @@ public class AccountController {
     public ResponseEntity<AccountDTO> getAccountDetails(@PathVariable UUID id) {
         AccountDTO accountDetails = accountService.getAccountDetails(id);
         return ResponseEntity.ok(accountDetails);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<Page<AccountDTO>> searchAccounts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String number,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortField,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
+
+        Page<AccountDTO> accountPage = accountService.searchAccounts(name, number, page, size, sortField, sortDirection);
+        return ResponseEntity.ok(accountPage);
     }
 
     @PostMapping

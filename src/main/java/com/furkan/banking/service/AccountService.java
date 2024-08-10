@@ -7,7 +7,13 @@ import com.furkan.banking.model.Account;
 import com.furkan.banking.model.User;
 import com.furkan.banking.repository.AccountRepository;
 import com.furkan.banking.repository.UserRepository;
+import com.furkan.banking.specification.AccountSpecificationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -41,6 +47,35 @@ public class AccountService {
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account not found"));
 
         return accountMapper.toAccountDTO(account);
+    }
+
+    public Page<AccountDTO> searchAccounts(String name, String number, int page, int size, String sortField, String sortDirection) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        AccountSpecificationBuilder builder = new AccountSpecificationBuilder();
+        builder.with("user", ":", user);
+
+        if (name != null && !name.isEmpty()) {
+            builder.with("name", "like", name);
+        }
+
+        if (number != null && !number.isEmpty()) {
+            builder.with("number", "like", number);
+        }
+
+        Specification<Account> spec = builder.build();
+
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Account> accountPage = accountRepository.findAll(spec, pageable);
+
+        return accountPage.map(accountMapper::toAccountDTO);
     }
 
     public AccountDTO createAccount(String accountName, BigDecimal initialBalance) {
