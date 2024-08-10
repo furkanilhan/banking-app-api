@@ -21,6 +21,12 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<AccountDTO> getAccountDetails(@PathVariable UUID id) {
+        AccountDTO accountDetails = accountService.getAccountDetails(id);
+        return ResponseEntity.ok(accountDetails);
+    }
+
     @PostMapping
     public ResponseEntity<AccountDTO> createAccount(@RequestParam String name,
                                                     @RequestParam BigDecimal initialBalance) {

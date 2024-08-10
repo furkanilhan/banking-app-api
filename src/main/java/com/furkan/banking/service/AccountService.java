@@ -29,6 +29,20 @@ public class AccountService {
         this.accountMapper = accountMapper;
     }
 
+    public AccountDTO getAccountDetails(UUID accountId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        Account account = accountRepository.findByIdAndUser(accountId, user)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account not found"));
+
+        return accountMapper.toAccountDTO(account);
+    }
+
     public AccountDTO createAccount(String accountName, BigDecimal initialBalance) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username);
