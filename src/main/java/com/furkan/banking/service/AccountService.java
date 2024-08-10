@@ -50,4 +50,27 @@ public class AccountService {
         Account savedAccount = accountRepository.save(account);
         return accountMapper.toAccountDTO(savedAccount);
     }
+
+    public AccountDTO updateAccount(UUID accountId, String newName, BigDecimal newBalance) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        Account account = accountRepository.findByIdAndUser(accountId, user)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account not found"));
+
+        if (accountRepository.existsByNameAndUser(newName, user) && !account.getName().equals(newName)) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "This account name already exists");
+        }
+
+        account.setName(newName);
+        account.setBalance(newBalance);
+
+        Account updatedAccount = accountRepository.save(account);
+
+        return accountMapper.toAccountDTO(updatedAccount);
+    }
 }

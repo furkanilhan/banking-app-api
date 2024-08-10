@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("${apiPrefix}/accounts")
@@ -24,5 +25,13 @@ public class AccountController {
                                                     @RequestParam BigDecimal initialBalance) {
         AccountDTO newAccount = accountService.createAccount(name, initialBalance);
         return ResponseEntity.ok(newAccount);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AccountDTO> updateAccount(@PathVariable UUID id,
+                                                    @RequestParam String name,
+                                                    @RequestParam BigDecimal balance) {
+        AccountDTO updatedAccount = accountService.updateAccount(id, name, balance);
+        return ResponseEntity.ok(updatedAccount);
     }
 }
