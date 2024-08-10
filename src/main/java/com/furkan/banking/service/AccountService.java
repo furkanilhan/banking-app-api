@@ -73,4 +73,18 @@ public class AccountService {
 
         return accountMapper.toAccountDTO(updatedAccount);
     }
+
+    public void deleteAccount(UUID accountId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        Account account = accountRepository.findByIdAndUser(accountId, user)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account not found"));
+
+        accountRepository.delete(account);
+    }
 }

@@ -1,6 +1,7 @@
 package com.furkan.banking.controller;
 
 import com.furkan.banking.dto.AccountDTO;
+import com.furkan.banking.payload.response.MessageResponse;
 import com.furkan.banking.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,5 +34,11 @@ public class AccountController {
                                                     @RequestParam BigDecimal balance) {
         AccountDTO updatedAccount = accountService.updateAccount(id, name, balance);
         return ResponseEntity.ok(updatedAccount);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MessageResponse> deleteAccount(@PathVariable UUID id) {
+        accountService.deleteAccount(id);
+        return ResponseEntity.ok(new MessageResponse("Account deleted successfully"));
     }
 }
