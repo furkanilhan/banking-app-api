@@ -43,7 +43,7 @@ public class AccountService {
             throw new CustomException(HttpStatus.NOT_FOUND, "User not found");
         }
 
-        Account account = accountRepository.findByIdAndUser(accountId, user)
+        Account account = accountRepository.findByIdAndUserAndIsDeletedFalse(accountId, user)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account not found"));
 
         return accountMapper.toAccountDTO(account);
@@ -86,7 +86,7 @@ public class AccountService {
             throw new CustomException(HttpStatus.NOT_FOUND, "User not found");
         }
 
-        if (accountRepository.existsByNameAndUser(accountName, user)) {
+        if (accountRepository.existsByNameAndUserAndIsDeletedFalse(accountName, user)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "This account name already exists");
         }
 
@@ -108,10 +108,10 @@ public class AccountService {
             throw new CustomException(HttpStatus.NOT_FOUND, "User not found");
         }
 
-        Account account = accountRepository.findByIdAndUser(accountId, user)
+        Account account = accountRepository.findByIdAndUserAndIsDeletedFalse(accountId, user)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account not found"));
 
-        if (accountRepository.existsByNameAndUser(newName, user) && !account.getName().equals(newName)) {
+        if (accountRepository.existsByNameAndUserAndIsDeletedFalse(newName, user) && !account.getName().equals(newName)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "This account name already exists");
         }
 
@@ -131,9 +131,10 @@ public class AccountService {
             throw new CustomException(HttpStatus.NOT_FOUND, "User not found");
         }
 
-        Account account = accountRepository.findByIdAndUser(accountId, user)
+        Account account = accountRepository.findByIdAndUserAndIsDeletedFalse(accountId, user)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account not found"));
 
-        accountRepository.delete(account);
+        account.setDeleted(true);
+        accountRepository.save(account);
     }
 }

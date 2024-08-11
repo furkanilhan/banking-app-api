@@ -12,6 +12,7 @@ public class AccountSpecificationBuilder {
 
     public AccountSpecificationBuilder() {
         this.specs = new ArrayList<>();
+        this.specs.add((root, query, builder) -> builder.isFalse(root.get("isDeleted")));
     }
 
     public void with(String key, String operation, Object value) {
@@ -27,7 +28,7 @@ public class AccountSpecificationBuilder {
 
     public Specification<Account> build() {
         if (specs.isEmpty()) {
-            return null;
+            return (root, query, builder) -> builder.conjunction();
         }
 
         Specification<Account> result = specs.get(0);

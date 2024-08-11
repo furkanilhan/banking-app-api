@@ -64,8 +64,11 @@ public class TransactionService {
     }
 
     private Account getAccountById(UUID accountId) {
-        return accountRepository.findById(accountId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account not found"));
+        Account account = accountRepository.findByIdAndIsDeletedFalse(accountId);
+        if (account == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Account not found");
+        }
+        return account;
     }
 
     private Account getAccountByIdWithLock(UUID accountId) {

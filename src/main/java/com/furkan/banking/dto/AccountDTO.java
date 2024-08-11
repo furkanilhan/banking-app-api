@@ -16,4 +16,5 @@ public class AccountDTO {
     private String name;
     private BigDecimal balance;
     private UUID userId;
+    private boolean isDeleted;
 }
