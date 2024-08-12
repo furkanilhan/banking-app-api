@@ -3,9 +3,6 @@ package com.furkan.banking.repository;
 import com.furkan.banking.model.Account;
 import com.furkan.banking.model.User;
 import jakarta.persistence.LockModeType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Lock;
@@ -21,6 +18,6 @@ public interface AccountRepository extends JpaRepository<Account, UUID>, JpaSpec
     Account findByIdAndIsDeletedFalse(UUID id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT a FROM Account a WHERE a.id = :accountId AND a.isDeleted = false")
-    Account findByIdForUpdate(@Param("accountId") UUID accountId);
+    @Query("SELECT a FROM Account a WHERE a.number = :accountNumber AND a.isDeleted = false")
+    Account findByNumberForUpdate(@Param("accountNumber") String accountNumber);
 }

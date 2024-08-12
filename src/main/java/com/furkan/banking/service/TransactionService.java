@@ -36,8 +36,8 @@ public class TransactionService {
         Transaction transaction = new Transaction();
         Transaction savedTransaction;
 
-        Account toAccount = getAccountByIdWithLock(request.getToAccountId());
-        Account fromAccount = getAccountByIdWithLock(request.getFromAccountId());
+        Account fromAccount = getAccountByNumberWithLock(request.getFromAccountNumber());
+        Account toAccount = getAccountByNumberWithLock(request.getToAccountNumber());
 
         validateAccounts(request, fromAccount, toAccount);
 
@@ -71,8 +71,8 @@ public class TransactionService {
         return account;
     }
 
-    private Account getAccountByIdWithLock(UUID accountId) {
-        Account account = accountRepository.findByIdForUpdate(accountId);
+    private Account getAccountByNumberWithLock(String accountNumber) {
+        Account account = accountRepository.findByNumberForUpdate(accountNumber);
         if (account == null) {
             throw new CustomException(HttpStatus.NOT_FOUND, "Account not found");
         }

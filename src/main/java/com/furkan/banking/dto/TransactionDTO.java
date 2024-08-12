@@ -12,6 +12,8 @@ public class TransactionDTO {
         private Long id;
         private UUID fromAccountId;
         private UUID toAccountId;
+        private String fromAccountNumber;
+        private String toAccountNumber;
         private BigDecimal amount;
         private LocalDateTime transactionDate;
         private TransactionStatus status;

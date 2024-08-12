@@ -90,6 +90,10 @@ public class AccountService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "This account name already exists");
         }
 
+        if (initialBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Initial balance cannot be negative");
+        }
+
         Account account = new Account();
         account.setName(accountName);
         account.setNumber(UUID.randomUUID().toString());
@@ -113,6 +117,10 @@ public class AccountService {
 
         if (accountRepository.existsByNameAndUserAndIsDeletedFalse(newName, user) && !account.getName().equals(newName)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "This account name already exists");
+        }
+
+        if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Initial balance cannot be negative");
         }
 
         account.setName(newName);
